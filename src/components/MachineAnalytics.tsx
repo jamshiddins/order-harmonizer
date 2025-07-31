@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { OrdersDialog } from "./OrdersDialog";
+import { useState } from "react";
 import { 
   Coffee, 
   TrendingUp, 
@@ -135,17 +137,25 @@ const getStatusConfig = (status: MachineData['status']) => {
 };
 
 export const MachineAnalytics = () => {
+  const [ordersDialogOpen, setOrdersDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+
   const totalMachines = machineData.length;
   const onlineMachines = machineData.filter(m => m.status === 'online').length;
   const totalRevenue = machineData.reduce((sum, m) => sum + m.totalRevenue, 0);
   const totalOrders = machineData.reduce((sum, m) => sum + m.totalOrders, 0);
   const avgSuccessRate = machineData.reduce((sum, m) => sum + m.successRate, 0) / totalMachines;
 
+  const handleMetricClick = (title: string) => {
+    setDialogTitle(title);
+    setOrdersDialogOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="analytics-card">
+        <Card className="analytics-card cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleMetricClick(`Заказы активных автоматов (${onlineMachines}/${totalMachines})`)}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Активные автоматы
@@ -153,14 +163,14 @@ export const MachineAnalytics = () => {
             <Coffee className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="metric-number">{onlineMachines}/{totalMachines}</div>
+            <div className="metric-number text-primary hover:text-primary-dark">{onlineMachines}/{totalMachines}</div>
             <p className="text-xs text-success">
               {Math.round((onlineMachines / totalMachines) * 100)}% в сети
             </p>
           </CardContent>
         </Card>
 
-        <Card className="analytics-card">
+        <Card className="analytics-card cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleMetricClick(`Заказы с общей выручкой (${formatCurrency(totalRevenue).slice(0, -4)}М)`)}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Общая выручка
@@ -168,12 +178,12 @@ export const MachineAnalytics = () => {
             <DollarSign className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="metric-number">{formatCurrency(totalRevenue).slice(0, -4)}М</div>
+            <div className="metric-number text-primary hover:text-primary-dark">{formatCurrency(totalRevenue).slice(0, -4)}М</div>
             <p className="text-xs text-success">+12.5% за месяц</p>
           </CardContent>
         </Card>
 
-        <Card className="analytics-card">
+        <Card className="analytics-card cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleMetricClick(`Все заказы (${totalOrders.toLocaleString()})`)}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Всего заказов
@@ -181,12 +191,12 @@ export const MachineAnalytics = () => {
             <BarChart3 className="h-4 w-4 text-secondary" />
           </CardHeader>
           <CardContent>
-            <div className="metric-number">{totalOrders.toLocaleString()}</div>
+            <div className="metric-number text-primary hover:text-primary-dark">{totalOrders.toLocaleString()}</div>
             <p className="text-xs text-success">+8.2% за неделю</p>
           </CardContent>
         </Card>
 
-        <Card className="analytics-card">
+        <Card className="analytics-card cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleMetricClick(`Успешные заказы (${avgSuccessRate.toFixed(1)}%)`)}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Средний успех
@@ -194,7 +204,7 @@ export const MachineAnalytics = () => {
             <TrendingUp className="h-4 w-4 text-accent" />
           </CardHeader>
           <CardContent>
-            <div className="metric-number">{avgSuccessRate.toFixed(1)}%</div>
+            <div className="metric-number text-primary hover:text-primary-dark">{avgSuccessRate.toFixed(1)}%</div>
             <p className="text-xs text-success">+1.3% улучшение</p>
           </CardContent>
         </Card>
@@ -251,35 +261,50 @@ export const MachineAnalytics = () => {
 
                   {/* Metrics Grid */}
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
-                    <div className="text-center p-3 rounded-lg bg-primary/10">
+                    <div 
+                      className="text-center p-3 rounded-lg bg-primary/10 cursor-pointer hover:bg-primary/20 transition-colors"
+                      onClick={() => handleMetricClick(`Заказы автомата ${machine.code} (${machine.totalOrders.toLocaleString()})`)}
+                    >
                       <p className="text-2xl font-bold text-primary">
                         {machine.totalOrders.toLocaleString()}
                       </p>
                       <p className="text-xs text-muted-foreground">Заказов</p>
                     </div>
                     
-                    <div className="text-center p-3 rounded-lg bg-success/10">
+                    <div 
+                      className="text-center p-3 rounded-lg bg-success/10 cursor-pointer hover:bg-success/20 transition-colors"
+                      onClick={() => handleMetricClick(`Оплаченные заказы ${machine.code} (${formatCurrency(machine.totalRevenue).slice(0, -4)}К)`)}
+                    >
                       <p className="text-2xl font-bold text-success">
                         {formatCurrency(machine.totalRevenue).slice(0, -4)}К
                       </p>
                       <p className="text-xs text-muted-foreground">Выручка</p>
                     </div>
                     
-                    <div className="text-center p-3 rounded-lg bg-secondary/10">
+                    <div 
+                      className="text-center p-3 rounded-lg bg-secondary/10 cursor-pointer hover:bg-secondary/20 transition-colors"
+                      onClick={() => handleMetricClick(`Успешные заказы ${machine.code} (${machine.successRate.toFixed(1)}%)`)}
+                    >
                       <p className="text-2xl font-bold text-secondary">
                         {machine.successRate.toFixed(1)}%
                       </p>
                       <p className="text-xs text-muted-foreground">Успешность</p>
                     </div>
                     
-                    <div className="text-center p-3 rounded-lg bg-accent/10">
+                    <div 
+                      className="text-center p-3 rounded-lg bg-accent/10 cursor-pointer hover:bg-accent/20 transition-colors"
+                      onClick={() => handleMetricClick(`Быстрые заказы ${machine.code} (${machine.avgProcessingTime}с)`)}
+                    >
                       <p className="text-2xl font-bold text-accent">
                         {machine.avgProcessingTime}с
                       </p>
                       <p className="text-xs text-muted-foreground">Время</p>
                     </div>
                     
-                    <div className="text-center p-3 rounded-lg bg-warning/10">
+                    <div 
+                      className="text-center p-3 rounded-lg bg-warning/10 cursor-pointer hover:bg-warning/20 transition-colors"
+                      onClick={() => handleMetricClick(`Возвращённые заказы ${machine.code} (${machine.refundRate.toFixed(1)}%)`)}
+                    >
                       <p className="text-2xl font-bold text-warning">
                         {machine.refundRate.toFixed(1)}%
                       </p>
@@ -324,6 +349,13 @@ export const MachineAnalytics = () => {
           </div>
         </CardContent>
       </Card>
+
+      <OrdersDialog
+        open={ordersDialogOpen}
+        onOpenChange={setOrdersDialogOpen}
+        title={dialogTitle}
+        orders={[]}
+      />
     </div>
   );
 };

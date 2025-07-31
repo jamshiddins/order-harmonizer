@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { OrdersDialog } from "./OrdersDialog";
+import { useState } from "react";
 import { 
   Database, 
   Upload, 
@@ -21,16 +23,17 @@ interface MetricCardProps {
   trend?: "up" | "down" | "stable";
   icon: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
-const MetricCard = ({ title, value, change, trend, icon, className }: MetricCardProps) => (
-  <Card className={`analytics-card ${className}`}>
+const MetricCard = ({ title, value, change, trend, icon, className, onClick }: MetricCardProps) => (
+  <Card className={`analytics-card ${className} ${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}`} onClick={onClick}>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
       <div className="text-primary">{icon}</div>
     </CardHeader>
     <CardContent>
-      <div className="metric-number">{value}</div>
+      <div className={`metric-number ${onClick ? 'text-primary hover:text-primary-dark' : ''}`}>{value}</div>
       {change && (
         <p className={`text-xs ${
           trend === 'up' ? 'text-success' : 
@@ -61,11 +64,11 @@ const StatusIndicator = ({ status, label, count }: StatusIndicatorProps) => {
   const config = statusConfig[status];
 
   return (
-    <div className="flex items-center space-x-3">
+    <div className="flex items-center space-x-3 cursor-pointer hover:bg-accent/50 p-2 rounded-lg transition-colors">
       <div className={`status-indicator ${config.color}`} />
       <span className="text-sm font-medium">{label}</span>
       {count !== undefined && (
-        <Badge variant="outline" className={config.textColor}>
+        <Badge variant="outline" className={`${config.textColor} hover:bg-current hover:text-background`}>
           {count}
         </Badge>
       )}
@@ -74,6 +77,14 @@ const StatusIndicator = ({ status, label, count }: StatusIndicatorProps) => {
 };
 
 export const DataFlowDashboard = () => {
+  const [ordersDialogOpen, setOrdersDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+
+  const handleMetricClick = (title: string) => {
+    setDialogTitle(title);
+    setOrdersDialogOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-background p-6">
       {/* Header */}
@@ -116,6 +127,7 @@ export const DataFlowDashboard = () => {
           change="+12.5% за месяц"
           trend="up"
           icon={<TrendingUp className="h-4 w-4" />}
+          onClick={() => handleMetricClick('Все заказы (12,485)')}
         />
         <MetricCard
           title="Обработанные файлы"
@@ -123,6 +135,7 @@ export const DataFlowDashboard = () => {
           change="+3 сегодня"
           trend="up"
           icon={<FileText className="h-4 w-4" />}
+          onClick={() => handleMetricClick('Обработанные файлы (156)')}
         />
         <MetricCard
           title="Качество данных"
@@ -130,6 +143,7 @@ export const DataFlowDashboard = () => {
           change="+2.1% улучшение"
           trend="up"
           icon={<CheckCircle className="h-4 w-4" />}
+          onClick={() => handleMetricClick('Проверенные заказы (94.2%)')}
         />
         <MetricCard
           title="Активные автоматы"
@@ -137,6 +151,7 @@ export const DataFlowDashboard = () => {
           change="2 офлайн"
           trend="stable"
           icon={<Activity className="h-4 w-4" />}
+          onClick={() => handleMetricClick('Заказы активных автоматов (87)')}
         />
       </div>
 
@@ -152,12 +167,24 @@ export const DataFlowDashboard = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-3">
-              <StatusIndicator status="success" label="Hardware Orders (HW.xlsx)" count={2847} />
-              <StatusIndicator status="success" label="Sales Reports (report.xlsx)" count={2654} />
-              <StatusIndicator status="warning" label="Fiscal Receipts" count={1923} />
-              <StatusIndicator status="processing" label="Payme Payments" count={856} />
-              <StatusIndicator status="error" label="Click Payments" count={45} />
-              <StatusIndicator status="success" label="Uzum Payments" count={234} />
+              <div onClick={() => handleMetricClick('Hardware Orders (2,847)')}>
+                <StatusIndicator status="success" label="Hardware Orders (HW.xlsx)" count={2847} />
+              </div>
+              <div onClick={() => handleMetricClick('Sales Reports (2,654)')}>
+                <StatusIndicator status="success" label="Sales Reports (report.xlsx)" count={2654} />
+              </div>
+              <div onClick={() => handleMetricClick('Fiscal Receipts (1,923)')}>
+                <StatusIndicator status="warning" label="Fiscal Receipts" count={1923} />
+              </div>
+              <div onClick={() => handleMetricClick('Payme Payments (856)')}>
+                <StatusIndicator status="processing" label="Payme Payments" count={856} />
+              </div>
+              <div onClick={() => handleMetricClick('Click Payments (45)')}>
+                <StatusIndicator status="error" label="Click Payments" count={45} />
+              </div>
+              <div onClick={() => handleMetricClick('Uzum Payments (234)')}>
+                <StatusIndicator status="success" label="Uzum Payments" count={234} />
+              </div>
             </div>
             
             <div className="pt-4 border-t border-border">
@@ -180,7 +207,10 @@ export const DataFlowDashboard = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+              <div 
+                className="flex items-center justify-between p-3 rounded-lg bg-destructive/10 border border-destructive/20 cursor-pointer hover:bg-destructive/20 transition-colors"
+                onClick={() => handleMetricClick('Временные заказы (23)')}
+              >
                 <div className="flex items-center space-x-3">
                   <XCircle className="h-4 w-4 text-destructive" />
                   <span className="text-sm font-medium">Временные заказы</span>
@@ -188,7 +218,10 @@ export const DataFlowDashboard = () => {
                 <Badge variant="destructive">23</Badge>
               </div>
               
-              <div className="flex items-center justify-between p-3 rounded-lg bg-warning/10 border border-warning/20">
+              <div 
+                className="flex items-center justify-between p-3 rounded-lg bg-warning/10 border border-warning/20 cursor-pointer hover:bg-warning/20 transition-colors"
+                onClick={() => handleMetricClick('Конфликты данных (7)')}
+              >
                 <div className="flex items-center space-x-3">
                   <AlertTriangle className="h-4 w-4 text-warning" />
                   <span className="text-sm font-medium">Конфликты данных</span>
@@ -196,7 +229,10 @@ export const DataFlowDashboard = () => {
                 <Badge className="bg-warning text-warning-foreground">7</Badge>
               </div>
               
-              <div className="flex items-center justify-between p-3 rounded-lg bg-warning/10 border border-warning/20">
+              <div 
+                className="flex items-center justify-between p-3 rounded-lg bg-warning/10 border border-warning/20 cursor-pointer hover:bg-warning/20 transition-colors"
+                onClick={() => handleMetricClick('Расхождения сумм (12)')}
+              >
                 <div className="flex items-center space-x-3">
                   <AlertTriangle className="h-4 w-4 text-warning" />
                   <span className="text-sm font-medium">Расхождения сумм</span>
@@ -204,7 +240,10 @@ export const DataFlowDashboard = () => {
                 <Badge className="bg-warning text-warning-foreground">12</Badge>
               </div>
               
-              <div className="flex items-center justify-between p-3 rounded-lg bg-success/10 border border-success/20">
+              <div 
+                className="flex items-center justify-between p-3 rounded-lg bg-success/10 border border-success/20 cursor-pointer hover:bg-success/20 transition-colors"
+                onClick={() => handleMetricClick('Успешно сопоставленные заказы (8,432)')}
+              >
                 <div className="flex items-center space-x-3">
                   <CheckCircle className="h-4 w-4 text-success" />
                   <span className="text-sm font-medium">Успешно сопоставлено</span>
@@ -257,7 +296,10 @@ export const DataFlowDashboard = () => {
           </div>
           
           <div className="mt-8 text-center">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+            <div 
+              className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 cursor-pointer hover:bg-primary/20 transition-colors"
+              onClick={() => handleMetricClick('Unified Orders Database (8,432)')}
+            >
               <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
               <span className="text-sm font-medium text-primary">
                 Unified Orders Database - 8,432 активных записи
@@ -266,6 +308,13 @@ export const DataFlowDashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+      <OrdersDialog
+        open={ordersDialogOpen}
+        onOpenChange={setOrdersDialogOpen}
+        title={dialogTitle}
+        orders={[]}
+      />
     </div>
   );
 };
