@@ -26,14 +26,11 @@ export const useProfile = (userId: string | undefined) => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        // Temporary workaround for type issues
-        const response = await (supabase as any)
+        const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', userId)
           .maybeSingle();
-        
-        const { data, error } = response;
 
         if (error) {
           console.error('Error fetching profile:', error);
@@ -41,7 +38,7 @@ export const useProfile = (userId: string | undefined) => {
           return;
         }
 
-        setProfile(data);
+        setProfile(data as Profile);
       } catch (err) {
         console.error('Error fetching profile:', err);
         setError('Failed to fetch profile');
