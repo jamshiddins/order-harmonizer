@@ -1000,7 +1000,144 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_complete_orders: {
+        Row: {
+          address: string | null
+          brew_status: string | null
+          brewing_time: string | null
+          click_amount: number | null
+          click_billing_id: string | null
+          click_cashbox: string | null
+          click_client_info: string | null
+          click_id: string | null
+          click_identifier: string | null
+          click_payment_date: string | null
+          click_payment_method: string | null
+          click_payment_status: string | null
+          click_service_name: string | null
+          created_at: string | null
+          creation_time: string | null
+          delivery_time: string | null
+          file_uploaded_at: string | null
+          fiscal_card_amount: number | null
+          fiscal_cash_amount: number | null
+          fiscal_cashier: string | null
+          fiscal_customer_info: string | null
+          fiscal_module: string | null
+          fiscal_operation_amount: number | null
+          fiscal_operation_datetime: string | null
+          fiscal_operation_type: string | null
+          fiscal_receipt_number: string | null
+          fiscal_recipe_number: string | null
+          fiscal_trade_point: string | null
+          goods_name: string | null
+          id: number | null
+          is_temporary: boolean | null
+          last_matched_at: string | null
+          machine_code: string | null
+          match_quality: string | null
+          match_score: number | null
+          order_number: string | null
+          order_price: number | null
+          order_resource: string | null
+          order_type: string | null
+          paying_time: string | null
+          payme_amount_without_commission: number | null
+          payme_card_number: string | null
+          payme_cashbox_name: string | null
+          payme_client_commission: number | null
+          payme_fiscal_receipt_id: string | null
+          payme_order_number: string | null
+          payme_payment_state: string | null
+          payme_payment_system_id: string | null
+          payme_payment_time: string | null
+          payme_processing_name: string | null
+          payme_provider_name: string | null
+          payme_provider_payment_id: string | null
+          payme_rrn: string | null
+          payment_status: string | null
+          reason: string | null
+          refund_time: string | null
+          source_filename: string | null
+          source_files: string[] | null
+          taste_name: string | null
+          updated_at: string | null
+          uzum_amount: number | null
+          uzum_card_number: string | null
+          uzum_card_type: string | null
+          uzum_commission: number | null
+          uzum_merchant_id: string | null
+          uzum_parsed_datetime: string | null
+          uzum_receipt_id: string | null
+          uzum_service_name: string | null
+          uzum_status: string | null
+          vhr_accrued_bonus: number | null
+          vhr_barcode: string | null
+          vhr_id: number | null
+          vhr_ikpu_code: string | null
+          vhr_machine_category: string | null
+          vhr_marking: string | null
+          vhr_payment_type: string | null
+          vhr_time: string | null
+          vhr_username: string | null
+        }
+        Relationships: []
+      }
+      v_file_processing_stats: {
+        Row: {
+          error_records: number | null
+          file_type: string | null
+          matched_records: number | null
+          matching_percentage: number | null
+          original_name: string | null
+          processed_records: number | null
+          processing_finished_at: string | null
+          processing_percentage: number | null
+          processing_status: string | null
+          records_count: number | null
+          uploaded_at: string | null
+        }
+        Insert: {
+          error_records?: number | null
+          file_type?: string | null
+          matched_records?: number | null
+          matching_percentage?: never
+          original_name?: string | null
+          processed_records?: number | null
+          processing_finished_at?: string | null
+          processing_percentage?: never
+          processing_status?: string | null
+          records_count?: number | null
+          uploaded_at?: string | null
+        }
+        Update: {
+          error_records?: number | null
+          file_type?: string | null
+          matched_records?: number | null
+          matching_percentage?: never
+          original_name?: string | null
+          processed_records?: number | null
+          processing_finished_at?: string | null
+          processing_percentage?: never
+          processing_status?: string | null
+          records_count?: number | null
+          uploaded_at?: string | null
+        }
+        Relationships: []
+      }
+      v_problematic_orders: {
+        Row: {
+          creation_time: string | null
+          error_count: number | null
+          error_types: string | null
+          is_temporary: boolean | null
+          machine_code: string | null
+          match_score: number | null
+          order_number: string | null
+          order_price: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       consolidate_partial_records: {
