@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Upload, 
   FileText, 
@@ -94,33 +97,100 @@ const formatFileSize = (bytes: number): string => {
 export const FileUploadZone = () => {
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [dragActive, setDragActive] = useState(false);
+  const { toast } = useToast();
+  const { user } = useAuth();
 
-  const simulateProcessing = (fileId: string) => {
-    const updateProgress = (progress: number) => {
+  const calculateFileHash = async (file: File): Promise<string> => {
+    const buffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const uploadFile = async (fileInfo: FileInfo, file: File) => {
+    if (!user) {
+      toast({
+        title: "Ошибка",
+        description: "Необходимо войти в систему для загрузки файлов",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Обновляем статус на обработку
       setFiles(prev => prev.map(f => 
-        f.id === fileId 
-          ? { 
-              ...f, 
-              progress,
-              status: progress === 100 ? 'completed' : 'processing',
-              recordsProcessed: Math.floor(Math.random() * 3000) + 500,
-              recordsMatched: Math.floor(Math.random() * 2500) + 400,
-              duplicatesFound: Math.floor(Math.random() * 50)
-            }
-          : f
+        f.id === fileInfo.id ? { ...f, status: 'processing', progress: 10 } : f
       ));
-    };
 
-    // Симуляция обработки
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += Math.random() * 15;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
+      const contentHash = await calculateFileHash(file);
+      
+      // Проверяем дубликаты
+      const { data: duplicates } = await supabase
+        .from('files')
+        .select('id, original_name')
+        .eq('content_hash', contentHash)
+        .eq('file_type', fileInfo.type);
+
+      if (duplicates && duplicates.length > 0) {
+        throw new Error(`Файл уже загружен: ${duplicates[0].original_name}`);
       }
-      updateProgress(progress);
-    }, 500);
+
+      // Обновляем прогресс
+      setFiles(prev => prev.map(f => 
+        f.id === fileInfo.id ? { ...f, progress: 50 } : f
+      ));
+
+      // Создаем запись в базе данных
+      const { data: fileRecord, error: dbError } = await supabase
+        .from('files')
+        .insert({
+          filename: `${Date.now()}_${file.name}`,
+          original_name: file.name,
+          file_type: fileInfo.type,
+          content_hash: contentHash,
+          file_size: file.size,
+          uploaded_by: user.id,
+          processing_status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (dbError) throw dbError;
+
+      // Завершаем загрузку
+      setFiles(prev => prev.map(f => 
+        f.id === fileInfo.id ? { 
+          ...f, 
+          status: 'completed', 
+          progress: 100,
+          recordsProcessed: 0, // Будет обновлено после обработки
+          recordsMatched: 0,
+          duplicatesFound: 0
+        } : f
+      ));
+
+      toast({
+        title: "Файл загружен",
+        description: `${file.name} успешно загружен и готов к обработке`,
+      });
+
+    } catch (error) {
+      console.error('Upload error:', error);
+      setFiles(prev => prev.map(f => 
+        f.id === fileInfo.id ? { 
+          ...f, 
+          status: 'error', 
+          errorMessage: error instanceof Error ? error.message : 'Ошибка загрузки'
+        } : f
+      ));
+
+      toast({
+        title: "Ошибка загрузки",
+        description: error instanceof Error ? error.message : 'Произошла ошибка при загрузке файла',
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -152,9 +222,10 @@ export const FileUploadZone = () => {
 
     setFiles(prev => [...prev, ...fileInfos]);
 
-    // Запускаем обработку файлов
-    fileInfos.forEach(file => {
-      setTimeout(() => simulateProcessing(file.id), Math.random() * 1000);
+    // Запускаем загрузку файлов
+    fileInfos.forEach((fileInfo, index) => {
+      const originalFile = newFiles[index];
+      setTimeout(() => uploadFile(fileInfo, originalFile), Math.random() * 1000);
     });
   };
 

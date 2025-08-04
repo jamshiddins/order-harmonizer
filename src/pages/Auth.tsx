@@ -55,7 +55,11 @@ export default function Auth() {
     setIsLoading(true);
     
     try {
-      await signUp(formData.email, formData.password, formData.fullName);
+      console.log('Form data:', formData);
+      const result = await signUp(formData.email, formData.password, formData.fullName);
+      console.log('Signup result:', result);
+    } catch (error) {
+      console.error('Signup form error:', error);
     } finally {
       setIsLoading(false);
     }

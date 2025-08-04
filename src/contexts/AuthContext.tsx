@@ -80,33 +80,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName,
+    try {
+      console.log('Starting signup process...', { email, fullName });
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
         },
-      },
-    });
+      });
 
-    if (error) {
+      console.log('Signup response:', { data, error });
+
+      if (error) {
+        console.error('Signup error:', error);
+        toast({
+          title: "Ошибка регистрации",
+          description: error.message,
+          variant: "destructive",
+        });
+        return { error };
+      }
+
+      if (data.user && !data.session) {
+        toast({
+          title: "Регистрация успешна",
+          description: "Проверьте почту для подтверждения аккаунта",
+        });
+      } else if (data.session) {
+        toast({
+          title: "Регистрация успешна",
+          description: "Добро пожаловать в систему!",
+        });
+      }
+
+      return { error: null };
+    } catch (err) {
+      console.error('Signup exception:', err);
+      const error = err as Error;
       toast({
         title: "Ошибка регистрации",
-        description: error.message,
+        description: error.message || "Произошла неожиданная ошибка",
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Регистрация успешна",
-        description: "Проверьте почту для подтверждения аккаунта",
-      });
+      return { error };
     }
-
-    return { error };
   };
 
   const signOut = async () => {
