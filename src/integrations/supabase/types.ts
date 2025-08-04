@@ -838,6 +838,18 @@ export type Database = {
         Args: { _user_id: string; _role: string }
         Returns: boolean
       }
+      upsert_to_unified_orders: {
+        Args: {
+          p_source_type: string
+          p_source_data: Json
+          p_source_file_id: number
+        }
+        Returns: {
+          operation_type: string
+          unified_order_id: number
+          match_info: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
