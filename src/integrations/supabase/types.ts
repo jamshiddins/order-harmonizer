@@ -16,54 +16,65 @@ export type Database = {
     Tables: {
       click_payments: {
         Row: {
-          amount: number | null
+          amount: number
           billing_id: string | null
           cashbox: string | null
-          click_id: string | null
+          click_id: string
           client_info: string | null
           created_at: string | null
           id: number
           identifier: string | null
-          payment_date: string | null
+          payment_date: string
           payment_method: string | null
           payment_status: string | null
           service_name: string | null
           source_file_id: number | null
           updated_at: string | null
+          version: number | null
         }
         Insert: {
-          amount?: number | null
+          amount: number
           billing_id?: string | null
           cashbox?: string | null
-          click_id?: string | null
+          click_id: string
           client_info?: string | null
           created_at?: string | null
           id?: number
           identifier?: string | null
-          payment_date?: string | null
+          payment_date: string
           payment_method?: string | null
           payment_status?: string | null
           service_name?: string | null
           source_file_id?: number | null
           updated_at?: string | null
+          version?: number | null
         }
         Update: {
-          amount?: number | null
+          amount?: number
           billing_id?: string | null
           cashbox?: string | null
-          click_id?: string | null
+          click_id?: string
           client_info?: string | null
           created_at?: string | null
           id?: number
           identifier?: string | null
-          payment_date?: string | null
+          payment_date?: string
           payment_method?: string | null
           payment_status?: string | null
           service_name?: string | null
           source_file_id?: number | null
           updated_at?: string | null
+          version?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "click_payments_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       files: {
         Row: {
@@ -167,14 +178,15 @@ export type Database = {
           customer_info: string | null
           fiscal_module: string | null
           id: number
-          operation_amount: number | null
-          operation_datetime: string | null
+          operation_amount: number
+          operation_datetime: string
           operation_type: string | null
-          receipt_number: string | null
+          receipt_number: string
           recipe_number: string | null
           source_file_id: number | null
           trade_point: string | null
           updated_at: string | null
+          version: number | null
         }
         Insert: {
           card_amount?: number | null
@@ -184,14 +196,15 @@ export type Database = {
           customer_info?: string | null
           fiscal_module?: string | null
           id?: number
-          operation_amount?: number | null
-          operation_datetime?: string | null
+          operation_amount: number
+          operation_datetime: string
           operation_type?: string | null
-          receipt_number?: string | null
+          receipt_number: string
           recipe_number?: string | null
           source_file_id?: number | null
           trade_point?: string | null
           updated_at?: string | null
+          version?: number | null
         }
         Update: {
           card_amount?: number | null
@@ -201,16 +214,25 @@ export type Database = {
           customer_info?: string | null
           fiscal_module?: string | null
           id?: number
-          operation_amount?: number | null
-          operation_datetime?: string | null
+          operation_amount?: number
+          operation_datetime?: string
           operation_type?: string | null
-          receipt_number?: string | null
+          receipt_number?: string
           recipe_number?: string | null
           source_file_id?: number | null
           trade_point?: string | null
           updated_at?: string | null
+          version?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_receipts_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hardware_orders: {
         Row: {
@@ -295,64 +317,170 @@ export type Database = {
       order_changes: {
         Row: {
           change_reason: string | null
-          change_type: string | null
+          change_type: string
           changed_at: string | null
           changed_by: string | null
-          field_name: string | null
+          confidence_score: number | null
+          field_name: string
           id: number
           new_value: string | null
           old_value: string | null
           order_number: string | null
-          record_id: number | null
+          processing_batch_id: string | null
+          record_id: number
           source_file_id: number | null
-          table_name: string | null
+          table_name: string
+          validation_status: string | null
         }
         Insert: {
           change_reason?: string | null
-          change_type?: string | null
+          change_type: string
           changed_at?: string | null
           changed_by?: string | null
-          field_name?: string | null
+          confidence_score?: number | null
+          field_name: string
           id?: number
           new_value?: string | null
           old_value?: string | null
           order_number?: string | null
-          record_id?: number | null
+          processing_batch_id?: string | null
+          record_id: number
           source_file_id?: number | null
-          table_name?: string | null
+          table_name: string
+          validation_status?: string | null
         }
         Update: {
           change_reason?: string | null
-          change_type?: string | null
+          change_type?: string
           changed_at?: string | null
           changed_by?: string | null
-          field_name?: string | null
+          confidence_score?: number | null
+          field_name?: string
           id?: number
           new_value?: string | null
           old_value?: string | null
           order_number?: string | null
-          record_id?: number | null
+          processing_batch_id?: string | null
+          record_id?: number
           source_file_id?: number | null
-          table_name?: string | null
+          table_name?: string
+          validation_status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "order_changes_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "order_changes_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_errors: {
+        Row: {
+          conflicting_values: Json | null
+          description: string
+          error_code: string | null
+          error_timestamp: string | null
+          error_type: string
+          id: number
+          order_number: string | null
+          processing_batch_id: string | null
+          resolution_note: string | null
+          resolution_status: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string | null
+          source_file_id: number | null
+          source_record_id: number | null
+          source_table: string | null
+          suggested_resolution: string | null
+          target_record_id: number | null
+          target_table: string | null
+        }
+        Insert: {
+          conflicting_values?: Json | null
+          description: string
+          error_code?: string | null
+          error_timestamp?: string | null
+          error_type: string
+          id?: number
+          order_number?: string | null
+          processing_batch_id?: string | null
+          resolution_note?: string | null
+          resolution_status?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string | null
+          source_file_id?: number | null
+          source_record_id?: number | null
+          source_table?: string | null
+          suggested_resolution?: string | null
+          target_record_id?: number | null
+          target_table?: string | null
+        }
+        Update: {
+          conflicting_values?: Json | null
+          description?: string
+          error_code?: string | null
+          error_timestamp?: string | null
+          error_type?: string
+          id?: number
+          order_number?: string | null
+          processing_batch_id?: string | null
+          resolution_note?: string | null
+          resolution_status?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string | null
+          source_file_id?: number | null
+          source_record_id?: number | null
+          source_table?: string | null
+          suggested_resolution?: string | null
+          target_record_id?: number | null
+          target_table?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_errors_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "order_errors_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payme_payments: {
         Row: {
           amount_without_commission: number | null
-          bank_operation_time: string | null
           bank_receipt_date: string | null
+          bank_time: string | null
           cancel_time: string | null
           card_number: string | null
-          cashbox_id: string | null
+          cash_register_id: string | null
           cashbox_identifier: string | null
           cashbox_name: string | null
-          client_commission: string | null
+          client_commission: number | null
           created_at: string | null
           epos_merchant_id: string | null
           epos_terminal_id: string | null
           external_id: string | null
           fiscal_receipt_id: string | null
+          fiscal_sign: string | null
           id: number
           order_number: string | null
           payment_description: string | null
@@ -360,29 +488,32 @@ export type Database = {
           payment_system_id: string | null
           payment_time: string | null
           processing_name: string | null
-          processing_operation_time: string | null
+          processing_time: string | null
           provider_name: string | null
           provider_payment_id: string | null
+          report_number: number | null
           rrn: string | null
           source_file_id: number | null
           state: string | null
           updated_at: string | null
+          version: number | null
         }
         Insert: {
           amount_without_commission?: number | null
-          bank_operation_time?: string | null
           bank_receipt_date?: string | null
+          bank_time?: string | null
           cancel_time?: string | null
           card_number?: string | null
-          cashbox_id?: string | null
+          cash_register_id?: string | null
           cashbox_identifier?: string | null
           cashbox_name?: string | null
-          client_commission?: string | null
+          client_commission?: number | null
           created_at?: string | null
           epos_merchant_id?: string | null
           epos_terminal_id?: string | null
           external_id?: string | null
           fiscal_receipt_id?: string | null
+          fiscal_sign?: string | null
           id?: number
           order_number?: string | null
           payment_description?: string | null
@@ -390,29 +521,32 @@ export type Database = {
           payment_system_id?: string | null
           payment_time?: string | null
           processing_name?: string | null
-          processing_operation_time?: string | null
+          processing_time?: string | null
           provider_name?: string | null
           provider_payment_id?: string | null
+          report_number?: number | null
           rrn?: string | null
           source_file_id?: number | null
           state?: string | null
           updated_at?: string | null
+          version?: number | null
         }
         Update: {
           amount_without_commission?: number | null
-          bank_operation_time?: string | null
           bank_receipt_date?: string | null
+          bank_time?: string | null
           cancel_time?: string | null
           card_number?: string | null
-          cashbox_id?: string | null
+          cash_register_id?: string | null
           cashbox_identifier?: string | null
           cashbox_name?: string | null
-          client_commission?: string | null
+          client_commission?: number | null
           created_at?: string | null
           epos_merchant_id?: string | null
           epos_terminal_id?: string | null
           external_id?: string | null
           fiscal_receipt_id?: string | null
+          fiscal_sign?: string | null
           id?: number
           order_number?: string | null
           payment_description?: string | null
@@ -420,15 +554,25 @@ export type Database = {
           payment_system_id?: string | null
           payment_time?: string | null
           processing_name?: string | null
-          processing_operation_time?: string | null
+          processing_time?: string | null
           provider_name?: string | null
           provider_payment_id?: string | null
+          report_number?: number | null
           rrn?: string | null
           source_file_id?: number | null
           state?: string | null
           updated_at?: string | null
+          version?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "payme_payments_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -482,6 +626,7 @@ export type Database = {
           time_value: number | null
           updated_at: string | null
           username: string | null
+          version: number | null
         }
         Insert: {
           accrued_bonus?: number | null
@@ -504,6 +649,7 @@ export type Database = {
           time_value?: number | null
           updated_at?: string | null
           username?: string | null
+          version?: number | null
         }
         Update: {
           accrued_bonus?: number | null
@@ -526,8 +672,17 @@ export type Database = {
           time_value?: number | null
           updated_at?: string | null
           username?: string | null
+          version?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "sales_reports_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       unified_orders: {
         Row: {
@@ -783,7 +938,7 @@ export type Database = {
       }
       uzum_payments: {
         Row: {
-          amount: number | null
+          amount: number
           card_number: string | null
           card_type: string | null
           commission: number | null
@@ -791,14 +946,16 @@ export type Database = {
           id: number
           merchant_id: string | null
           parsed_datetime: string | null
-          receipt_id: string | null
-          service_name: string | null
+          payment_datetime: string | null
+          receipt_id: string
+          service_name: string
           source_file_id: number | null
           status: string | null
           updated_at: string | null
+          version: number | null
         }
         Insert: {
-          amount?: number | null
+          amount: number
           card_number?: string | null
           card_type?: string | null
           commission?: number | null
@@ -806,14 +963,16 @@ export type Database = {
           id?: number
           merchant_id?: string | null
           parsed_datetime?: string | null
-          receipt_id?: string | null
-          service_name?: string | null
+          payment_datetime?: string | null
+          receipt_id: string
+          service_name: string
           source_file_id?: number | null
           status?: string | null
           updated_at?: string | null
+          version?: number | null
         }
         Update: {
-          amount?: number | null
+          amount?: number
           card_number?: string | null
           card_type?: string | null
           commission?: number | null
@@ -821,13 +980,23 @@ export type Database = {
           id?: number
           merchant_id?: string | null
           parsed_datetime?: string | null
-          receipt_id?: string | null
-          service_name?: string | null
+          payment_datetime?: string | null
+          receipt_id?: string
+          service_name?: string
           source_file_id?: number | null
           status?: string | null
           updated_at?: string | null
+          version?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "uzum_payments_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
