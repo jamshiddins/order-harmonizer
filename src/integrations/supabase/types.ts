@@ -831,9 +831,84 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_partial_data_analysis: {
+        Row: {
+          available_sources: string | null
+          click_payment_date: string | null
+          creation_time: string | null
+          fiscal_operation_datetime: string | null
+          has_click: string | null
+          has_fiscal: string | null
+          has_hardware: string | null
+          has_payme: string | null
+          has_sales: string | null
+          has_uzum: string | null
+          id: number | null
+          is_temporary: boolean | null
+          last_matched_at: string | null
+          machine_code: string | null
+          match_score: number | null
+          order_number: string | null
+          order_price: number | null
+          payme_payment_time: string | null
+          uzum_parsed_datetime: string | null
+          vhr_time: string | null
+        }
+        Insert: {
+          available_sources?: never
+          click_payment_date?: string | null
+          creation_time?: string | null
+          fiscal_operation_datetime?: string | null
+          has_click?: never
+          has_fiscal?: never
+          has_hardware?: never
+          has_payme?: never
+          has_sales?: never
+          has_uzum?: never
+          id?: number | null
+          is_temporary?: boolean | null
+          last_matched_at?: string | null
+          machine_code?: string | null
+          match_score?: number | null
+          order_number?: string | null
+          order_price?: number | null
+          payme_payment_time?: string | null
+          uzum_parsed_datetime?: string | null
+          vhr_time?: string | null
+        }
+        Update: {
+          available_sources?: never
+          click_payment_date?: string | null
+          creation_time?: string | null
+          fiscal_operation_datetime?: string | null
+          has_click?: never
+          has_fiscal?: never
+          has_hardware?: never
+          has_payme?: never
+          has_sales?: never
+          has_uzum?: never
+          id?: number | null
+          is_temporary?: boolean | null
+          last_matched_at?: string | null
+          machine_code?: string | null
+          match_score?: number | null
+          order_number?: string | null
+          order_price?: number | null
+          payme_payment_time?: string | null
+          uzum_parsed_datetime?: string | null
+          vhr_time?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      consolidate_partial_records: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          consolidated_count: number
+          operation_details: string
+        }[]
+      }
       has_role: {
         Args: { _user_id: string; _role: string }
         Returns: boolean
