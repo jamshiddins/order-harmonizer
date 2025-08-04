@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { fileUploadSchema, sanitizeInput } from "@/lib/validation";
 import { 
   Upload, 
   FileText, 
@@ -211,21 +212,46 @@ export const FileUploadZone = () => {
   }, []);
 
   const processFiles = (newFiles: File[]) => {
-    const fileInfos: FileInfo[] = newFiles.map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
-      name: file.name,
-      size: file.size,
-      type: detectFileType(file.name),
-      status: 'pending',
-      progress: 0
-    }));
+    // Валидация файлов
+    const validatedFiles: { file: File; fileInfo: FileInfo }[] = [];
+    
+    for (const file of newFiles) {
+      const validation = fileUploadSchema.safeParse({
+        file,
+        originalName: file.name
+      });
+      
+      if (!validation.success) {
+        toast({
+          title: "Ошибка валидации файла",
+          description: `${file.name}: ${validation.error.issues[0]?.message}`,
+          variant: "destructive",
+        });
+        continue;
+      }
+      
+      const fileInfo: FileInfo = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: sanitizeInput(file.name),
+        size: file.size,
+        type: detectFileType(file.name),
+        status: 'pending',
+        progress: 0
+      };
+      
+      validatedFiles.push({ file, fileInfo });
+    }
 
+    if (validatedFiles.length === 0) {
+      return;
+    }
+
+    const fileInfos = validatedFiles.map(({ fileInfo }) => fileInfo);
     setFiles(prev => [...prev, ...fileInfos]);
 
-    // Запускаем загрузку файлов
-    fileInfos.forEach((fileInfo, index) => {
-      const originalFile = newFiles[index];
-      setTimeout(() => uploadFile(fileInfo, originalFile), Math.random() * 1000);
+    // Запускаем загрузку валидированных файлов
+    validatedFiles.forEach(({ fileInfo, file }, index) => {
+      setTimeout(() => uploadFile(fileInfo, file), Math.random() * 1000);
     });
   };
 

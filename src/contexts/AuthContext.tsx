@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { useProfile } from '@/hooks/useProfile';
+import { signInSchema, signUpSchema, sanitizeInput, validateUrl } from '@/lib/validation';
 
 interface Profile {
   id: string;
@@ -64,28 +65,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
-      // Validate inputs
-      if (!email || !email.includes('@')) {
+      // Валидация с помощью Zod
+      const validation = signInSchema.safeParse({ 
+        email: sanitizeInput(email), 
+        password 
+      });
+      
+      if (!validation.success) {
+        const errorMessage = validation.error.issues[0]?.message || 'Ошибка валидации';
         toast({
           title: "Ошибка валидации",
-          description: "Введите корректный email адрес",
+          description: errorMessage,
           variant: "destructive",
         });
-        return { error: new Error('Invalid email') };
+        return { error: new Error(errorMessage) };
       }
       
-      if (!password) {
-        toast({
-          title: "Ошибка валидации", 
-          description: "Введите пароль",
-          variant: "destructive",
-        });
-        return { error: new Error('Password required') };
-      }
+      const { email: validatedEmail, password: validatedPassword } = validation.data;
 
       const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: validatedEmail,
+        password: validatedPassword,
       });
 
       if (error) {
@@ -120,32 +120,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
-      // Validate inputs
-      if (!email || !email.includes('@')) {
+      // Валидация с помощью Zod
+      const validation = signUpSchema.safeParse({ 
+        email: sanitizeInput(email), 
+        password, 
+        fullName: fullName ? sanitizeInput(fullName) : 'Пользователь'
+      });
+      
+      if (!validation.success) {
+        const errorMessage = validation.error.issues[0]?.message || 'Ошибка валидации';
         toast({
           title: "Ошибка валидации",
-          description: "Введите корректный email адрес",
+          description: errorMessage,
           variant: "destructive",
         });
-        return { error: new Error('Invalid email') };
+        return { error: new Error(errorMessage) };
       }
       
-      if (!password || password.length < 6) {
-        toast({
-          title: "Ошибка валидации",
-          description: "Пароль должен содержать минимум 6 символов",
-          variant: "destructive",
-        });
-        return { error: new Error('Password too short') };
+      const { email: validatedEmail, password: validatedPassword, fullName: validatedFullName } = validation.data;
+
+      // Проверяем URL для безопасности
+      const redirectUrl = `${window.location.origin}/`;
+      if (!validateUrl(redirectUrl)) {
+        throw new Error('Некорректный URL для редиректа');
       }
 
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
+        email: validatedEmail,
+        password: validatedPassword,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: redirectUrl,
           data: {
-            full_name: fullName || email,
+            full_name: validatedFullName,
           },
         },
       });
