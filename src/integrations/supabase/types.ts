@@ -74,6 +74,13 @@ export type Database = {
             referencedRelation: "files"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "click_payments_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
+            referencedColumns: ["id"]
+          },
         ]
       }
       file_type_templates: {
@@ -194,6 +201,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "files_duplicate_of_id_fkey"
+            columns: ["duplicate_of_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "files_uploaded_by_fkey"
             columns: ["uploaded_by"]
             isOneToOne: false
@@ -263,6 +277,13 @@ export type Database = {
             columns: ["source_file_id"]
             isOneToOne: false
             referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_receipts_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
             referencedColumns: ["id"]
           },
         ]
@@ -345,6 +366,13 @@ export type Database = {
             referencedRelation: "files"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "hardware_orders_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
+            referencedColumns: ["id"]
+          },
         ]
       }
       order_changes: {
@@ -412,6 +440,13 @@ export type Database = {
             columns: ["source_file_id"]
             isOneToOne: false
             referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_changes_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
             referencedColumns: ["id"]
           },
         ]
@@ -493,6 +528,13 @@ export type Database = {
             columns: ["source_file_id"]
             isOneToOne: false
             referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_errors_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
             referencedColumns: ["id"]
           },
         ]
@@ -605,6 +647,13 @@ export type Database = {
             referencedRelation: "files"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "payme_payments_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profiles: {
@@ -713,6 +762,13 @@ export type Database = {
             columns: ["source_file_id"]
             isOneToOne: false
             referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_reports_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
             referencedColumns: ["id"]
           },
         ]
@@ -1029,6 +1085,13 @@ export type Database = {
             referencedRelation: "files"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "uzum_payments_source_file_id_fkey"
+            columns: ["source_file_id"]
+            isOneToOne: false
+            referencedRelation: "v_file_processing_progress"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -1116,6 +1179,60 @@ export type Database = {
         }
         Relationships: []
       }
+      v_file_processing_progress: {
+        Row: {
+          error_records: number | null
+          file_type: string | null
+          id: number | null
+          matched_records: number | null
+          matching_percentage: number | null
+          original_name: string | null
+          processed_records: number | null
+          processing_duration_seconds: number | null
+          processing_finished_at: string | null
+          processing_percentage: number | null
+          processing_started_at: string | null
+          processing_status: string | null
+          records_count: number | null
+          unified_records_affected: number | null
+          uploaded_at: string | null
+        }
+        Insert: {
+          error_records?: number | null
+          file_type?: string | null
+          id?: number | null
+          matched_records?: number | null
+          matching_percentage?: never
+          original_name?: string | null
+          processed_records?: number | null
+          processing_duration_seconds?: never
+          processing_finished_at?: string | null
+          processing_percentage?: never
+          processing_started_at?: string | null
+          processing_status?: string | null
+          records_count?: number | null
+          unified_records_affected?: never
+          uploaded_at?: string | null
+        }
+        Update: {
+          error_records?: number | null
+          file_type?: string | null
+          id?: number | null
+          matched_records?: number | null
+          matching_percentage?: never
+          original_name?: string | null
+          processed_records?: number | null
+          processing_duration_seconds?: never
+          processing_finished_at?: string | null
+          processing_percentage?: never
+          processing_started_at?: string | null
+          processing_status?: string | null
+          records_count?: number | null
+          unified_records_affected?: never
+          uploaded_at?: string | null
+        }
+        Relationships: []
+      }
       v_file_processing_stats: {
         Row: {
           error_records: number | null
@@ -1173,6 +1290,16 @@ export type Database = {
       }
     }
     Functions: {
+      analyze_data_completeness: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          source_combination: string
+          record_count: number
+          percentage: number
+          avg_match_score: number
+          quality_level: string
+        }[]
+      }
       calculate_column_match_percentage: {
         Args: {
           file_headers: string[]
@@ -1221,6 +1348,16 @@ export type Database = {
           p_operation_amount: number
         }
         Returns: boolean
+      }
+      generate_system_health_report: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          report_section: string
+          metric_name: string
+          current_value: string
+          status: string
+          recommendation: string
+        }[]
       }
       get_partial_data_analysis: {
         Args: Record<PropertyKey, never>
@@ -1297,6 +1434,15 @@ export type Database = {
           operation_type: string
           unified_order_id: number
           match_info: string
+        }[]
+      }
+      validate_unified_order_quality: {
+        Args: { p_order_id: number }
+        Returns: {
+          validation_type: string
+          is_valid: boolean
+          error_message: string
+          severity: string
         }[]
       }
     }
