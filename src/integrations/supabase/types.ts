@@ -76,6 +76,39 @@ export type Database = {
           },
         ]
       }
+      file_type_templates: {
+        Row: {
+          column_name: string
+          column_order: number | null
+          data_type: string | null
+          file_type: string
+          id: number
+          is_required: boolean | null
+          language: string
+          sample_value: string | null
+        }
+        Insert: {
+          column_name: string
+          column_order?: number | null
+          data_type?: string | null
+          file_type: string
+          id?: number
+          is_required?: boolean | null
+          language: string
+          sample_value?: string | null
+        }
+        Update: {
+          column_name?: string
+          column_order?: number | null
+          data_type?: string | null
+          file_type?: string
+          id?: number
+          is_required?: boolean | null
+          language?: string
+          sample_value?: string | null
+        }
+        Relationships: []
+      }
       files: {
         Row: {
           content_hash: string
@@ -1140,11 +1173,28 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_column_match_percentage: {
+        Args: {
+          file_headers: string[]
+          template_type: string
+          template_language: string
+        }
+        Returns: number
+      }
       consolidate_partial_records: {
         Args: Record<PropertyKey, never>
         Returns: {
           consolidated_count: number
           operation_details: string
+        }[]
+      }
+      detect_file_type_by_columns: {
+        Args: { file_headers: string[] }
+        Returns: {
+          file_type: string
+          language: string
+          match_percentage: number
+          confidence_level: string
         }[]
       }
       find_partial_matches: {
@@ -1162,6 +1212,15 @@ export type Database = {
           time_difference_seconds: number
           existing_sources: string[]
         }[]
+      }
+      fiscal_record_exists: {
+        Args: {
+          p_receipt_number: string
+          p_fiscal_module: string
+          p_operation_datetime: string
+          p_operation_amount: number
+        }
+        Returns: boolean
       }
       get_partial_data_analysis: {
         Args: Record<PropertyKey, never>
@@ -1188,8 +1247,44 @@ export type Database = {
           last_matched_at: string
         }[]
       }
+      hardware_record_exists: {
+        Args: {
+          p_order_number: string
+          p_machine_code: string
+          p_creation_time: string
+          p_order_price: number
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: { _user_id: string; _role: string }
+        Returns: boolean
+      }
+      process_new_file: {
+        Args: {
+          p_filename: string
+          p_original_name: string
+          p_content_hash: string
+          p_file_headers: string[]
+        }
+        Returns: {
+          file_id: number
+          detected_type: string
+          detected_language: string
+          match_percentage: number
+          is_duplicate: boolean
+          duplicate_of_id: number
+          processing_status: string
+          error_message: string
+        }[]
+      }
+      sales_record_exists: {
+        Args: {
+          p_order_number: string
+          p_machine_code: string
+          p_formatted_time: string
+          p_order_price: number
+        }
         Returns: boolean
       }
       upsert_to_unified_orders: {
