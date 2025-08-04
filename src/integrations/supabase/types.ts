@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      click_payments: {
+        Row: {
+          amount: number | null
+          billing_id: string | null
+          cashbox: string | null
+          click_id: string | null
+          client_info: string | null
+          created_at: string | null
+          id: number
+          identifier: string | null
+          payment_date: string | null
+          payment_method: string | null
+          payment_status: string | null
+          service_name: string | null
+          source_file_id: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount?: number | null
+          billing_id?: string | null
+          cashbox?: string | null
+          click_id?: string | null
+          client_info?: string | null
+          created_at?: string | null
+          id?: number
+          identifier?: string | null
+          payment_date?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          service_name?: string | null
+          source_file_id?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number | null
+          billing_id?: string | null
+          cashbox?: string | null
+          click_id?: string | null
+          client_info?: string | null
+          created_at?: string | null
+          id?: number
+          identifier?: string | null
+          payment_date?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          service_name?: string | null
+          source_file_id?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       files: {
         Row: {
           content_hash: string
@@ -107,6 +158,60 @@ export type Database = {
           },
         ]
       }
+      fiscal_receipts: {
+        Row: {
+          card_amount: number | null
+          cash_amount: number | null
+          cashier: string | null
+          created_at: string | null
+          customer_info: string | null
+          fiscal_module: string | null
+          id: number
+          operation_amount: number | null
+          operation_datetime: string | null
+          operation_type: string | null
+          receipt_number: string | null
+          recipe_number: string | null
+          source_file_id: number | null
+          trade_point: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          card_amount?: number | null
+          cash_amount?: number | null
+          cashier?: string | null
+          created_at?: string | null
+          customer_info?: string | null
+          fiscal_module?: string | null
+          id?: number
+          operation_amount?: number | null
+          operation_datetime?: string | null
+          operation_type?: string | null
+          receipt_number?: string | null
+          recipe_number?: string | null
+          source_file_id?: number | null
+          trade_point?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          card_amount?: number | null
+          cash_amount?: number | null
+          cashier?: string | null
+          created_at?: string | null
+          customer_info?: string | null
+          fiscal_module?: string | null
+          id?: number
+          operation_amount?: number | null
+          operation_datetime?: string | null
+          operation_type?: string | null
+          receipt_number?: string | null
+          recipe_number?: string | null
+          source_file_id?: number | null
+          trade_point?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       hardware_orders: {
         Row: {
           address: string | null
@@ -187,6 +292,144 @@ export type Database = {
           },
         ]
       }
+      order_changes: {
+        Row: {
+          change_reason: string | null
+          change_type: string | null
+          changed_at: string | null
+          changed_by: string | null
+          field_name: string | null
+          id: number
+          new_value: string | null
+          old_value: string | null
+          order_number: string | null
+          record_id: number | null
+          source_file_id: number | null
+          table_name: string | null
+        }
+        Insert: {
+          change_reason?: string | null
+          change_type?: string | null
+          changed_at?: string | null
+          changed_by?: string | null
+          field_name?: string | null
+          id?: number
+          new_value?: string | null
+          old_value?: string | null
+          order_number?: string | null
+          record_id?: number | null
+          source_file_id?: number | null
+          table_name?: string | null
+        }
+        Update: {
+          change_reason?: string | null
+          change_type?: string | null
+          changed_at?: string | null
+          changed_by?: string | null
+          field_name?: string | null
+          id?: number
+          new_value?: string | null
+          old_value?: string | null
+          order_number?: string | null
+          record_id?: number | null
+          source_file_id?: number | null
+          table_name?: string | null
+        }
+        Relationships: []
+      }
+      payme_payments: {
+        Row: {
+          amount_without_commission: number | null
+          bank_operation_time: string | null
+          bank_receipt_date: string | null
+          cancel_time: string | null
+          card_number: string | null
+          cashbox_id: string | null
+          cashbox_identifier: string | null
+          cashbox_name: string | null
+          client_commission: string | null
+          created_at: string | null
+          epos_merchant_id: string | null
+          epos_terminal_id: string | null
+          external_id: string | null
+          fiscal_receipt_id: string | null
+          id: number
+          order_number: string | null
+          payment_description: string | null
+          payment_state: string | null
+          payment_system_id: string | null
+          payment_time: string | null
+          processing_name: string | null
+          processing_operation_time: string | null
+          provider_name: string | null
+          provider_payment_id: string | null
+          rrn: string | null
+          source_file_id: number | null
+          state: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount_without_commission?: number | null
+          bank_operation_time?: string | null
+          bank_receipt_date?: string | null
+          cancel_time?: string | null
+          card_number?: string | null
+          cashbox_id?: string | null
+          cashbox_identifier?: string | null
+          cashbox_name?: string | null
+          client_commission?: string | null
+          created_at?: string | null
+          epos_merchant_id?: string | null
+          epos_terminal_id?: string | null
+          external_id?: string | null
+          fiscal_receipt_id?: string | null
+          id?: number
+          order_number?: string | null
+          payment_description?: string | null
+          payment_state?: string | null
+          payment_system_id?: string | null
+          payment_time?: string | null
+          processing_name?: string | null
+          processing_operation_time?: string | null
+          provider_name?: string | null
+          provider_payment_id?: string | null
+          rrn?: string | null
+          source_file_id?: number | null
+          state?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount_without_commission?: number | null
+          bank_operation_time?: string | null
+          bank_receipt_date?: string | null
+          cancel_time?: string | null
+          card_number?: string | null
+          cashbox_id?: string | null
+          cashbox_identifier?: string | null
+          cashbox_name?: string | null
+          client_commission?: string | null
+          created_at?: string | null
+          epos_merchant_id?: string | null
+          epos_terminal_id?: string | null
+          external_id?: string | null
+          fiscal_receipt_id?: string | null
+          id?: number
+          order_number?: string | null
+          payment_description?: string | null
+          payment_state?: string | null
+          payment_system_id?: string | null
+          payment_time?: string | null
+          processing_name?: string | null
+          processing_operation_time?: string | null
+          provider_name?: string | null
+          provider_payment_id?: string | null
+          rrn?: string | null
+          source_file_id?: number | null
+          state?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -217,14 +460,104 @@ export type Database = {
         }
         Relationships: []
       }
+      sales_reports: {
+        Row: {
+          accrued_bonus: number | null
+          barcode: string | null
+          created_at: string | null
+          formatted_time: string | null
+          goods_id: number | null
+          goods_name: string | null
+          id: number
+          ikpu_code: string | null
+          machine_category: string | null
+          machine_code: string | null
+          marking: string | null
+          order_number: string | null
+          order_price: number | null
+          order_resource: string | null
+          payment_type: string | null
+          report_id: number | null
+          source_file_id: number | null
+          time_value: number | null
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          accrued_bonus?: number | null
+          barcode?: string | null
+          created_at?: string | null
+          formatted_time?: string | null
+          goods_id?: number | null
+          goods_name?: string | null
+          id?: number
+          ikpu_code?: string | null
+          machine_category?: string | null
+          machine_code?: string | null
+          marking?: string | null
+          order_number?: string | null
+          order_price?: number | null
+          order_resource?: string | null
+          payment_type?: string | null
+          report_id?: number | null
+          source_file_id?: number | null
+          time_value?: number | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          accrued_bonus?: number | null
+          barcode?: string | null
+          created_at?: string | null
+          formatted_time?: string | null
+          goods_id?: number | null
+          goods_name?: string | null
+          id?: number
+          ikpu_code?: string | null
+          machine_category?: string | null
+          machine_code?: string | null
+          marking?: string | null
+          order_number?: string | null
+          order_price?: number | null
+          order_resource?: string | null
+          payment_type?: string | null
+          report_id?: number | null
+          source_file_id?: number | null
+          time_value?: number | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
       unified_orders: {
         Row: {
           address: string | null
           brew_status: string | null
           brewing_time: string | null
+          click_amount: number | null
+          click_billing_id: string | null
+          click_cashbox: string | null
+          click_client_info: string | null
+          click_id: string | null
+          click_identifier: string | null
+          click_payment_date: string | null
+          click_payment_method: string | null
+          click_payment_status: string | null
+          click_service_name: string | null
           created_at: string | null
           creation_time: string | null
           delivery_time: string | null
+          fiscal_card_amount: number | null
+          fiscal_cash_amount: number | null
+          fiscal_cashier: string | null
+          fiscal_customer_info: string | null
+          fiscal_module: string | null
+          fiscal_operation_amount: number | null
+          fiscal_operation_datetime: string | null
+          fiscal_operation_type: string | null
+          fiscal_receipt_number: string | null
+          fiscal_recipe_number: string | null
+          fiscal_trade_point: string | null
           goods_name: string | null
           id: number
           is_temporary: boolean | null
@@ -236,20 +569,72 @@ export type Database = {
           order_resource: string | null
           order_type: string | null
           paying_time: string | null
+          payme_amount_without_commission: number | null
+          payme_card_number: string | null
+          payme_cashbox_name: string | null
+          payme_client_commission: number | null
+          payme_fiscal_receipt_id: string | null
+          payme_order_number: string | null
+          payme_payment_state: string | null
+          payme_payment_system_id: string | null
+          payme_payment_time: string | null
+          payme_processing_name: string | null
+          payme_provider_name: string | null
+          payme_provider_payment_id: string | null
+          payme_rrn: string | null
           payment_status: string | null
           reason: string | null
           refund_time: string | null
           source_files: string[] | null
           taste_name: string | null
           updated_at: string | null
+          uzum_amount: number | null
+          uzum_card_number: string | null
+          uzum_card_type: string | null
+          uzum_commission: number | null
+          uzum_merchant_id: string | null
+          uzum_parsed_datetime: string | null
+          uzum_receipt_id: string | null
+          uzum_service_name: string | null
+          uzum_status: string | null
+          vhr_accrued_bonus: number | null
+          vhr_barcode: string | null
+          vhr_id: number | null
+          vhr_ikpu_code: string | null
+          vhr_machine_category: string | null
+          vhr_marking: string | null
+          vhr_payment_type: string | null
+          vhr_time: string | null
+          vhr_username: string | null
         }
         Insert: {
           address?: string | null
           brew_status?: string | null
           brewing_time?: string | null
+          click_amount?: number | null
+          click_billing_id?: string | null
+          click_cashbox?: string | null
+          click_client_info?: string | null
+          click_id?: string | null
+          click_identifier?: string | null
+          click_payment_date?: string | null
+          click_payment_method?: string | null
+          click_payment_status?: string | null
+          click_service_name?: string | null
           created_at?: string | null
           creation_time?: string | null
           delivery_time?: string | null
+          fiscal_card_amount?: number | null
+          fiscal_cash_amount?: number | null
+          fiscal_cashier?: string | null
+          fiscal_customer_info?: string | null
+          fiscal_module?: string | null
+          fiscal_operation_amount?: number | null
+          fiscal_operation_datetime?: string | null
+          fiscal_operation_type?: string | null
+          fiscal_receipt_number?: string | null
+          fiscal_recipe_number?: string | null
+          fiscal_trade_point?: string | null
           goods_name?: string | null
           id?: number
           is_temporary?: boolean | null
@@ -261,20 +646,72 @@ export type Database = {
           order_resource?: string | null
           order_type?: string | null
           paying_time?: string | null
+          payme_amount_without_commission?: number | null
+          payme_card_number?: string | null
+          payme_cashbox_name?: string | null
+          payme_client_commission?: number | null
+          payme_fiscal_receipt_id?: string | null
+          payme_order_number?: string | null
+          payme_payment_state?: string | null
+          payme_payment_system_id?: string | null
+          payme_payment_time?: string | null
+          payme_processing_name?: string | null
+          payme_provider_name?: string | null
+          payme_provider_payment_id?: string | null
+          payme_rrn?: string | null
           payment_status?: string | null
           reason?: string | null
           refund_time?: string | null
           source_files?: string[] | null
           taste_name?: string | null
           updated_at?: string | null
+          uzum_amount?: number | null
+          uzum_card_number?: string | null
+          uzum_card_type?: string | null
+          uzum_commission?: number | null
+          uzum_merchant_id?: string | null
+          uzum_parsed_datetime?: string | null
+          uzum_receipt_id?: string | null
+          uzum_service_name?: string | null
+          uzum_status?: string | null
+          vhr_accrued_bonus?: number | null
+          vhr_barcode?: string | null
+          vhr_id?: number | null
+          vhr_ikpu_code?: string | null
+          vhr_machine_category?: string | null
+          vhr_marking?: string | null
+          vhr_payment_type?: string | null
+          vhr_time?: string | null
+          vhr_username?: string | null
         }
         Update: {
           address?: string | null
           brew_status?: string | null
           brewing_time?: string | null
+          click_amount?: number | null
+          click_billing_id?: string | null
+          click_cashbox?: string | null
+          click_client_info?: string | null
+          click_id?: string | null
+          click_identifier?: string | null
+          click_payment_date?: string | null
+          click_payment_method?: string | null
+          click_payment_status?: string | null
+          click_service_name?: string | null
           created_at?: string | null
           creation_time?: string | null
           delivery_time?: string | null
+          fiscal_card_amount?: number | null
+          fiscal_cash_amount?: number | null
+          fiscal_cashier?: string | null
+          fiscal_customer_info?: string | null
+          fiscal_module?: string | null
+          fiscal_operation_amount?: number | null
+          fiscal_operation_datetime?: string | null
+          fiscal_operation_type?: string | null
+          fiscal_receipt_number?: string | null
+          fiscal_recipe_number?: string | null
+          fiscal_trade_point?: string | null
           goods_name?: string | null
           id?: number
           is_temporary?: boolean | null
@@ -286,12 +723,43 @@ export type Database = {
           order_resource?: string | null
           order_type?: string | null
           paying_time?: string | null
+          payme_amount_without_commission?: number | null
+          payme_card_number?: string | null
+          payme_cashbox_name?: string | null
+          payme_client_commission?: number | null
+          payme_fiscal_receipt_id?: string | null
+          payme_order_number?: string | null
+          payme_payment_state?: string | null
+          payme_payment_system_id?: string | null
+          payme_payment_time?: string | null
+          payme_processing_name?: string | null
+          payme_provider_name?: string | null
+          payme_provider_payment_id?: string | null
+          payme_rrn?: string | null
           payment_status?: string | null
           reason?: string | null
           refund_time?: string | null
           source_files?: string[] | null
           taste_name?: string | null
           updated_at?: string | null
+          uzum_amount?: number | null
+          uzum_card_number?: string | null
+          uzum_card_type?: string | null
+          uzum_commission?: number | null
+          uzum_merchant_id?: string | null
+          uzum_parsed_datetime?: string | null
+          uzum_receipt_id?: string | null
+          uzum_service_name?: string | null
+          uzum_status?: string | null
+          vhr_accrued_bonus?: number | null
+          vhr_barcode?: string | null
+          vhr_id?: number | null
+          vhr_ikpu_code?: string | null
+          vhr_machine_category?: string | null
+          vhr_marking?: string | null
+          vhr_payment_type?: string | null
+          vhr_time?: string | null
+          vhr_username?: string | null
         }
         Relationships: []
       }
@@ -310,6 +778,54 @@ export type Database = {
           id?: string
           role?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      uzum_payments: {
+        Row: {
+          amount: number | null
+          card_number: string | null
+          card_type: string | null
+          commission: number | null
+          created_at: string | null
+          id: number
+          merchant_id: string | null
+          parsed_datetime: string | null
+          receipt_id: string | null
+          service_name: string | null
+          source_file_id: number | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount?: number | null
+          card_number?: string | null
+          card_type?: string | null
+          commission?: number | null
+          created_at?: string | null
+          id?: number
+          merchant_id?: string | null
+          parsed_datetime?: string | null
+          receipt_id?: string | null
+          service_name?: string | null
+          source_file_id?: number | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number | null
+          card_number?: string | null
+          card_type?: string | null
+          commission?: number | null
+          created_at?: string | null
+          id?: number
+          merchant_id?: string | null
+          parsed_datetime?: string | null
+          receipt_id?: string | null
+          service_name?: string | null
+          source_file_id?: number | null
+          status?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
