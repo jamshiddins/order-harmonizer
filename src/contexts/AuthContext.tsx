@@ -63,43 +63,109 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      // Validate inputs
+      if (!email || !email.includes('@')) {
+        toast({
+          title: "Ошибка валидации",
+          description: "Введите корректный email адрес",
+          variant: "destructive",
+        });
+        return { error: new Error('Invalid email') };
+      }
+      
+      if (!password) {
+        toast({
+          title: "Ошибка валидации", 
+          description: "Введите пароль",
+          variant: "destructive",
+        });
+        return { error: new Error('Password required') };
+      }
 
-    if (error) {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        // Handle specific error cases
+        let errorMessage = error.message;
+        if (error.message.includes('invalid_credentials')) {
+          errorMessage = 'Неверный email или пароль';
+        } else if (error.message.includes('email_not_confirmed')) {
+          errorMessage = 'Подтвердите email адрес перед входом';
+        } else if (error.message.includes('too_many_requests')) {
+          errorMessage = 'Слишком много попыток входа. Попробуйте позже';
+        }
+        
+        toast({
+          title: "Ошибка входа",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+
+      return { error };
+    } catch (err) {
+      console.error('Sign in error:', err);
       toast({
         title: "Ошибка входа",
-        description: error.message,
+        description: "Произошла неожиданная ошибка",
         variant: "destructive",
       });
+      return { error: err };
     }
-
-    return { error };
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
-      console.log('Starting signup process...', { email, fullName });
+      // Validate inputs
+      if (!email || !email.includes('@')) {
+        toast({
+          title: "Ошибка валидации",
+          description: "Введите корректный email адрес",
+          variant: "destructive",
+        });
+        return { error: new Error('Invalid email') };
+      }
       
+      if (!password || password.length < 6) {
+        toast({
+          title: "Ошибка валидации",
+          description: "Пароль должен содержать минимум 6 символов",
+          variant: "destructive",
+        });
+        return { error: new Error('Password too short') };
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
-            full_name: fullName,
+            full_name: fullName || email,
           },
         },
       });
 
-      console.log('Signup response:', { data, error });
-
       if (error) {
         console.error('Signup error:', error);
+        
+        // Handle specific error cases
+        let errorMessage = error.message;
+        if (error.message.includes('already registered')) {
+          errorMessage = 'Пользователь с таким email уже зарегистрирован';
+        } else if (error.message.includes('weak password')) {
+          errorMessage = 'Пароль слишком слабый. Используйте более сложный пароль';
+        } else if (error.message.includes('invalid email')) {
+          errorMessage = 'Некорректный email адрес';
+        }
+        
         toast({
           title: "Ошибка регистрации",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive",
         });
         return { error };

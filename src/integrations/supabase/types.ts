@@ -686,6 +686,36 @@ export type Database = {
         }
         Relationships: []
       }
+      role_change_audit: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          changed_user_id: string
+          id: string
+          new_role: string | null
+          old_role: string | null
+          reason: string | null
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          changed_user_id: string
+          id?: string
+          new_role?: string | null
+          old_role?: string | null
+          reason?: string | null
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          changed_user_id?: string
+          id?: string
+          new_role?: string | null
+          old_role?: string | null
+          reason?: string | null
+        }
+        Relationships: []
+      }
       sales_reports: {
         Row: {
           accrued_bonus: number | null
@@ -1290,6 +1320,10 @@ export type Database = {
       }
     }
     Functions: {
+      admin_update_user_role: {
+        Args: { target_user_id: string; new_role: string; reason?: string }
+        Returns: boolean
+      }
       analyze_data_completeness: {
         Args: Record<PropertyKey, never>
         Returns: {
